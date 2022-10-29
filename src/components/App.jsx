@@ -89,10 +89,14 @@ export class App extends Component {
         <h1 className={style.header}>Phonebook</h1>
         <ContactForm onSubmit={this.handleSubmit} />
         <Filter value={filter} onChange={this.handleChangeFilter} />
-        <ContactList
+        {this.state.contacts.length === 0 ? (
+            <p className={style.paragraph}>There are no contacts on your list yet</p>
+        ) : (
+          <ContactList
           contacts={this.filterItems()}
           toDelete={this.deleteContact}
-        />
+          />
+          )}
       </div>
     );
   }
