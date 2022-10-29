@@ -18,13 +18,33 @@ export class App extends Component {
     name: '',
     number: '', 
   };
+  
+  componentDidMount() {
+    const localContacts = localStorage.getItem('contacts');
+    const parseContacts = JSON.parse(localContacts);
+
+    if (localContacts === null) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    } else {
+      this.setState({ contacts: parseContacts });
+    };
+  };
+
+  componentDidUpdate(prevProps, prevState) {
+    const newContacts = this.state.contacts;
+    const newLocalContacts = JSON.stringify(newContacts);
+    
+    if (prevState.contacts.length !== this.state.contacts.length) {
+      localStorage.setItem('contacts', newLocalContacts);
+    };
+  };
 
   handleChange = e => {
     const { name, value } = e.target;
     this.setState({ [name]: value });
   };
 
-  add = ({ name, number }) => {
+  handleSubmit = ({ name, number }) => {
     const lowerCase = name.toLowerCase();
     const contacts = this.state.contacts;
     let onList = false;
@@ -67,7 +87,7 @@ export class App extends Component {
     return (
       <div>
         <h1 className={style.header}>Phonebook</h1>
-        <ContactForm onSubmit={this.add} />
+        <ContactForm onSubmit={this.handleSubmit} />
         <Filter value={filter} onChange={this.handleChangeFilter} />
         <ContactList
           contacts={this.filterItems()}
